@@ -1,0 +1,71 @@
+package com.example.moviesapp.data.repository
+
+import android.util.Log
+import com.example.moviesapp.data.datasource.MovieCacheDataSource
+import com.example.moviesapp.data.datasource.MovieLocalDataSource
+import com.example.moviesapp.data.datasource.MovieRemoteDataSource
+import com.example.moviesapp.data.model.movie.Movie
+import com.example.moviesapp.domain.repository.MovieRepository
+
+class MovieRepositoryImpl (
+    private val movieRemoteDataSource: MovieRemoteDataSource,
+    private val movieLocalDataSource: MovieLocalDataSource,
+    private val movieCacheDataSource: MovieCacheDataSource
+) : MovieRepository {
+    override suspend fun getMoviesList(): List<Movie>? {
+        return getMoviesCache()
+    }
+
+    override suspend fun updateMoviesList(): List<Movie>? {
+        val moviesList = getMoviesFromAPI()
+        movieLocalDataSource.deleteMoviesFromDB()
+        movieLocalDataSource.saveMoviesToDB(moviesList)
+        movieCacheDataSource.updateMovies(moviesList)
+        return moviesList
+    }
+
+    private suspend fun getMoviesFromAPI() : List<Movie> {
+        lateinit var moviesList: List<Movie>
+        try {
+            val response = movieRemoteDataSource.getMovies()
+            val body = response.body()
+            if (body != null) {
+                moviesList = body.movies
+            }
+        } catch (e: Exception) {
+            Log.d("jatin", "error while fetching data from API")
+        }
+        return moviesList
+    }
+
+    private suspend fun getMoviesFromDB() : List<Movie> {
+        lateinit var moviesList: List<Movie>
+        try {
+            moviesList = movieLocalDataSource.getMoviesFromDB()
+        } catch (e: Exception) {
+            Log.d("jatin", "error while fetching data from DB")
+        }
+        if (moviesList.isNotEmpty()) {
+            movieCacheDataSource.updateMovies(moviesList)
+        } else {
+            moviesList = getMoviesFromAPI()
+            movieLocalDataSource.saveMoviesToDB(moviesList)
+        }
+        return moviesList
+    }
+
+    private suspend fun getMoviesCache() : List<Movie> {
+        lateinit var moviesList: List<Movie>
+        try {
+            moviesList = movieCacheDataSource.getMovies()
+        } catch (e: Exception) {
+            Log.d("jatin", "error while fetching data from Cache")
+        }
+        if (moviesList.isEmpty()) {
+            moviesList = getMoviesFromDB()
+        }
+        return moviesList
+    }
+
+
+}
