@@ -3,6 +3,11 @@ package com.example.moviesapp.presentation
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -30,23 +35,53 @@ class HomeActivity : AppCompatActivity() {
 
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val inflater : MenuInflater = menuInflater
+        inflater.inflate(R.menu.more_options, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.update_button -> {
+                updateMovies()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
     private fun initRecyclerView() {
+        binding.progressBar.visibility = View.VISIBLE
         binding.movieRecyclerView.layoutManager = LinearLayoutManager(this)
         adapter = MovieRecyclerViewAdapter()
         binding.movieRecyclerView.adapter = adapter
-        updateMovies()
+        getMovies()
+        binding.progressBar.visibility = View.GONE
     }
 
-    private fun updateMovies() {
+    private fun getMovies() {
         val movies = movieViewModel.getMovies()
         movies.observe(this, Observer {
-            Log.d("jatin", it.toString())
             if (it != null) {
                 adapter.setMoviesList(it)
                 adapter.notifyDataSetChanged()
             }
         })
+    }
 
+    private fun updateMovies() {
+        binding.progressBar.visibility = View.VISIBLE
+        Toast.makeText(this, "Fetching latest data", Toast.LENGTH_SHORT).show()
+        val movies = movieViewModel.updateMovies()
+        movies.observe(this, Observer {
+            if (it != null) {
+                adapter.setMoviesList(it)
+                adapter.notifyDataSetChanged()
+            }
+        })
+        binding.progressBar.visibility = View.GONE
+        Toast.makeText(this, "Success", Toast.LENGTH_SHORT).show()
     }
 
 }

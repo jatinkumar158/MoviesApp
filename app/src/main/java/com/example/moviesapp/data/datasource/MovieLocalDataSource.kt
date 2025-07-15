@@ -12,13 +12,13 @@ class MovieLocalDataSource(private val movieDao: MovieDao) {
         return movieDao.getMovies()
     }
 
-    suspend fun deleteMoviesFromDB() {
+    fun deleteMoviesFromDB() {
         CoroutineScope(Dispatchers.IO).launch {
             movieDao.deleteMovies()
         }
     }
 
-    suspend fun saveMoviesToDB(moviesList : List<Movie>) {
+    fun saveMoviesToDB(moviesList : List<Movie>) {
         CoroutineScope(Dispatchers.IO).launch {
             movieDao.saveMovies(moviesList)
         }

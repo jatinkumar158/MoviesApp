@@ -1,5 +1,6 @@
 package com.example.moviesapp.presentation
 
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
@@ -45,6 +46,12 @@ class MovieViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(bi
         binding.listItemTitle.text = movie.title
         val imageURL = "https://image.tmdb.org/t/p/original/" + movie.posterPath
         Glide.with(binding.listItemImage.context).load(imageURL).into(binding.listItemImage)
+        binding.listItemContainer.setOnClickListener {
+            val context = binding.root.context
+            val intent = Intent(context, MovieActivity::class.java)
+            intent.putExtra("movie", movie)
+            context.startActivity(intent)
+        }
     }
 
 }
