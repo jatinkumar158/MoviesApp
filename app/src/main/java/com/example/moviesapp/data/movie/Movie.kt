@@ -1,4 +1,4 @@
-package com.example.moviesapp.data.model.movie
+package com.example.moviesapp.data.movie
 
 
 import androidx.room.Entity
@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "movie_table")
 data class Movie(
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @SerializedName("id")
     val id: Int,
     @SerializedName("overview")

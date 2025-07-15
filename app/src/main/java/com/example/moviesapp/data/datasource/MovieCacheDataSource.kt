@@ -1,10 +1,11 @@
 package com.example.moviesapp.data.datasource
 
-import com.example.moviesapp.data.model.movie.Movie
+import com.example.moviesapp.data.movie.Movie
+import javax.inject.Inject
 
-class MovieCacheDataSource {
+class MovieCacheDataSource @Inject constructor() {
 
-    private lateinit var moviesList : ArrayList<Movie>
+    private var moviesList : ArrayList<Movie> = ArrayList()
 
     fun getMovies() : List<Movie> {
         return moviesList

@@ -1,6 +1,6 @@
 package com.example.moviesapp.domain.repository
 
-import com.example.moviesapp.data.model.movie.Movie
+import com.example.moviesapp.data.movie.Movie
 
 interface MovieRepository {
 

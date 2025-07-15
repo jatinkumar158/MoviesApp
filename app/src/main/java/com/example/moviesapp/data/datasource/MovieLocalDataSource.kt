@@ -1,7 +1,7 @@
 package com.example.moviesapp.data.datasource
 
 import com.example.moviesapp.data.db.MovieDao
-import com.example.moviesapp.data.model.movie.Movie
+import com.example.moviesapp.data.movie.Movie
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

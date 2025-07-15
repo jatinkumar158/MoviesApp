@@ -4,7 +4,7 @@ import android.util.Log
 import com.example.moviesapp.data.datasource.MovieCacheDataSource
 import com.example.moviesapp.data.datasource.MovieLocalDataSource
 import com.example.moviesapp.data.datasource.MovieRemoteDataSource
-import com.example.moviesapp.data.model.movie.Movie
+import com.example.moviesapp.data.movie.Movie
 import com.example.moviesapp.domain.repository.MovieRepository
 
 class MovieRepositoryImpl (
@@ -25,7 +25,7 @@ class MovieRepositoryImpl (
     }
 
     private suspend fun getMoviesFromAPI() : List<Movie> {
-        lateinit var moviesList: List<Movie>
+        var moviesList: List<Movie> = ArrayList()
         try {
             val response = movieRemoteDataSource.getMovies()
             val body = response.body()
@@ -33,17 +33,17 @@ class MovieRepositoryImpl (
                 moviesList = body.movies
             }
         } catch (e: Exception) {
-            Log.d("jatin", "error while fetching data from API")
+            Log.d("jatin", "error while fetching data from API ${e.message}")
         }
         return moviesList
     }
 
     private suspend fun getMoviesFromDB() : List<Movie> {
-        lateinit var moviesList: List<Movie>
+        var moviesList: List<Movie> = ArrayList()
         try {
             moviesList = movieLocalDataSource.getMoviesFromDB()
         } catch (e: Exception) {
-            Log.d("jatin", "error while fetching data from DB")
+            Log.d("jatin", "error while fetching data from DB ${e.message}")
         }
         if (moviesList.isNotEmpty()) {
             movieCacheDataSource.updateMovies(moviesList)
