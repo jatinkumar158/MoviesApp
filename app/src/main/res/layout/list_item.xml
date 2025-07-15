@@ -21,6 +21,8 @@
                 android:layout_height="100dp"
                 android:scaleType="fitXY"/>
 
+
+
             <TextView
                 android:id="@+id/list_item_title"
                 android:layout_width="match_parent"
@@ -31,6 +33,18 @@
                 android:textSize="25dp" />
 
         </LinearLayout>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end">
+
+            <ImageView
+                android:id="@+id/list_item_bookmarked"
+                android:layout_width="30dp"
+                android:layout_height="30dp"/>
+
+        </FrameLayout>
 
     </androidx.cardview.widget.CardView>
 </layout>

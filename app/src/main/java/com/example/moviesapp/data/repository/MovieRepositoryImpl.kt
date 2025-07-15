@@ -24,6 +24,15 @@ class MovieRepositoryImpl (
         return moviesList
     }
 
+    override suspend fun addBookMark(id: Int) {
+        movieLocalDataSource.updateBookMark(id)
+        movieCacheDataSource.updateBookMark(id)
+    }
+
+    override suspend fun getBookmarkedMovies(): List<Movie>? {
+        return movieLocalDataSource.getBookMarkedMovies()
+    }
+
     private suspend fun getMoviesFromAPI() : List<Movie> {
         var moviesList: List<Movie> = ArrayList()
         try {
@@ -66,6 +75,5 @@ class MovieRepositoryImpl (
         }
         return moviesList
     }
-
 
 }

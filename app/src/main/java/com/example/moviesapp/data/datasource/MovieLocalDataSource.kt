@@ -24,4 +24,14 @@ class MovieLocalDataSource(private val movieDao: MovieDao) {
         }
     }
 
+    fun updateBookMark(id: Int) {
+        CoroutineScope(Dispatchers.Main).launch {
+            movieDao.toggleBookMark(id)
+        }
+    }
+
+    suspend fun getBookMarkedMovies(): List<Movie> {
+        return movieDao.getBookmarkedMovies()
+    }
+
 }

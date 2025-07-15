@@ -1,7 +1,6 @@
-package com.example.moviesapp.presentation
+package com.example.moviesapp.presentation.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.bumptech.glide.Glide
@@ -22,6 +21,7 @@ class MovieActivity : AppCompatActivity() {
         val imageURL = "https://image.tmdb.org/t/p/original/" + movie.posterPath
         Glide.with(binding.movieImage.context).load(imageURL).into(binding.movieImage)
         binding.movieDescription.text = movie.overview
+
 
 
     }

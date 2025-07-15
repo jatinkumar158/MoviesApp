@@ -17,4 +17,6 @@ data class Movie(
     val posterPath: String?,
     @SerializedName("title")
     val title: String?,
+    @SerializedName("bookmark")
+    var isBookMarked: Boolean = false,
 ) : Serializable

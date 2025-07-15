@@ -16,5 +16,14 @@ class MovieCacheDataSource @Inject constructor() {
         moviesList = ArrayList(movies)
     }
 
+    fun updateBookMark(id: Int) {
+        for (i in 0..moviesList.size) {
+            if (moviesList[i].id == id) {
+                moviesList[i].isBookMarked = !moviesList[i].isBookMarked
+                break
+            }
+        }
+    }
+
 
 }

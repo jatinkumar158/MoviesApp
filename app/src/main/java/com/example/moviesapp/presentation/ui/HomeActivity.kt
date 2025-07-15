@@ -1,19 +1,20 @@
-package com.example.moviesapp.presentation
+package com.example.moviesapp.presentation.ui
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.moviesapp.R
 import com.example.moviesapp.databinding.ActivityHomeBinding
+import com.example.moviesapp.presentation.viewmodel.HomeViewModel
+import com.example.moviesapp.presentation.viewmodel.HomeViewModelFactory
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -21,8 +22,8 @@ import javax.inject.Inject
 class HomeActivity : AppCompatActivity() {
 
     @Inject
-    lateinit var factory: MovieViewModelFactory
-    private lateinit var movieViewModel: MovieViewModel
+    lateinit var factory: HomeViewModelFactory
+    private lateinit var homeViewModel: HomeViewModel
     private lateinit var binding: ActivityHomeBinding
     private lateinit var adapter: MovieRecyclerViewAdapter
 
@@ -30,8 +31,16 @@ class HomeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
 
-        movieViewModel = ViewModelProvider(this, factory)[MovieViewModel::class.java]
+        homeViewModel = ViewModelProvider(this, factory)[HomeViewModel::class.java]
         initRecyclerView()
+
+        binding.showAllButton.setOnClickListener {
+            getMovies()
+        }
+
+        binding.showBookmarksButton.setOnClickListener {
+            getBookMarkedMovies()
+        }
 
     }
 
@@ -54,14 +63,24 @@ class HomeActivity : AppCompatActivity() {
     private fun initRecyclerView() {
         binding.progressBar.visibility = View.VISIBLE
         binding.movieRecyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = MovieRecyclerViewAdapter()
+        adapter = MovieRecyclerViewAdapter(homeViewModel)
         binding.movieRecyclerView.adapter = adapter
         getMovies()
         binding.progressBar.visibility = View.GONE
     }
 
     private fun getMovies() {
-        val movies = movieViewModel.getMovies()
+        val movies = homeViewModel.getMovies()
+        movies.observe(this, Observer {
+            if (it != null) {
+                adapter.setMoviesList(it)
+                adapter.notifyDataSetChanged()
+            }
+        })
+    }
+
+    private fun getBookMarkedMovies() {
+        val movies = homeViewModel.getBookMarkedMovies()
         movies.observe(this, Observer {
             if (it != null) {
                 adapter.setMoviesList(it)
@@ -72,8 +91,8 @@ class HomeActivity : AppCompatActivity() {
 
     private fun updateMovies() {
         binding.progressBar.visibility = View.VISIBLE
-        Toast.makeText(this, "Fetching latest data", Toast.LENGTH_SHORT).show()
-        val movies = movieViewModel.updateMovies()
+        Toast.makeText(this, "Refreshing data", Toast.LENGTH_SHORT).show()
+        val movies = homeViewModel.updateMovies()
         movies.observe(this, Observer {
             if (it != null) {
                 adapter.setMoviesList(it)
